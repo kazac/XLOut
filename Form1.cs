@@ -18,8 +18,7 @@ namespace XLOut
             tbl.Columns.Add("D", typeof(decimal));
             tbl.Rows.Add(1, "x", DateTime.Now.AddMinutes(1), 1.1m);
             tbl.Rows.Add(2, "y", DateTime.Now.AddMinutes(5), 2.2m);
-            tbl.Rows.Add(3, "z", DateTime.Now.AddMinutes(66), 3.3m);
-
+            tbl.Rows.Add(3, "z", DateTime.Now.AddMinutes(120), DBNull.Value);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -69,14 +68,15 @@ namespace XLOut
             sb.AppendLine("");
             foreach (var cell in row.ItemArray)
             {
-                var s = """<Cell ss:StyleID="s67"><Data ss:Type="String"></Data></Cell>""";
-                s = cell switch
+                var s = cell switch
                 {
                     string x => $"""<Cell ss:StyleID="s67"><Data ss:Type="String">{x}</Data></Cell>""",
                     int x => $"""<Cell ss:StyleID="s66"><Data ss:Type="Number">{x.ToString("D")}</Data></Cell>""",
                     double x => $"""<Cell ss:StyleID="s21"><Data ss:Type="Number">{x.ToString("R")}</Data></Cell>""",
                     decimal x => $"""<Cell ss:StyleID="s21"><Data ss:Type="Number">{x.ToString("G")}</Data></Cell>""",
                     DateTime x => $"""<Cell ss:StyleID="s62"><Data ss:Type="DateTime">{x.ToString("s")}</Data></Cell>""",
+                    null => $"""<Cell ss:StyleID="s67"><Data ss:Type="String"></Data></Cell>""",
+                    DBNull => $"""<Cell ss:StyleID="s67"><Data ss:Type="String"></Data></Cell>""",
                     _ => throw new NotImplementedException()
                 };
                 sb.Append(s);
